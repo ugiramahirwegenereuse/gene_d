@@ -3,7 +3,7 @@ services:
     build: .
     container_name: 25rp19942_web
     ports:
-      - "8000:80"
+      - "8010:80"
     depends_on:
       - 25rp19942_db
     restart: unless-stopped
