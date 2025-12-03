@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  25rp19942_web:
+    build: .
+    container_name: 25rp19942_web
+    ports:
+      - "8000:80"       # Changed from 8080 to avoid conflict with Jenkins
+    depends_on:
+      - 25rp19942_db
+    restart: unless-stopped
+
+  25rp188411_db:
+    image: mysql:8.0
+    container_name: 25rp19942_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: 25rp19942_shareride_db
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+
+  25rp188411_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: 25rp19942_phpmyadmin
+    environment:
+      PMA_HOST: 25rp19942_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8181:80"
+    depends_on:
+      - 25rp19942_db
+    restart: unless-stopped
+
+volumes:
+  db-data:
