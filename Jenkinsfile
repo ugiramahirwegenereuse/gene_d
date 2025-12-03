@@ -2,27 +2,32 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_COMPOSE = "/usr/local/bin/docker-compose" // adjust if needed
+        DOCKER_COMPOSE = "docker-compose"
+        APP_URL = "http://localhost:8010/registration.php"
     }
 
     stages {
         stage('Checkout') {
             steps {
+                echo "Cloning repository..."
                 git branch: 'main', url: 'https://github.com/ugiramahirwegenereuse/gene_d.git'
             }
         }
 
         stage('Build & Start Docker') {
             steps {
-                sh 'docker-compose down'
-                sh 'docker-compose up --build -d'
+                echo "Stopping any existing containers..."
+                sh "${DOCKER_COMPOSE} down"
+                
+                echo "Building and starting containers..."
+                sh "${DOCKER_COMPOSE} up --build -d"
             }
         }
 
-        stage('Test') {
+        stage('Test Application') {
             steps {
-                // You can add simple curl test to check PHP app
-                sh 'curl -I http://localhost:8010/registration.php'
+                echo "Testing registration page..."
+                sh "curl -I ${APP_URL}"
             }
         }
     }
@@ -30,6 +35,13 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished.'
+            echo 'You may add steps here to cleanup, archive artifacts, or notify.'
+        }
+        success {
+            echo 'Build and test completed successfully!'
+        }
+        failure {
+            echo 'Something went wrong! Check logs above.'
         }
     }
 }

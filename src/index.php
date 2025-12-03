@@ -14,7 +14,7 @@ error_reporting(E_ALL);
   <title>ShareRide - Home</title>
 </head>
 <body>
-  <h1>Welcome to ShareRide (CODERWANDA)</h1>
+  <h1>Welcome to CODERWANDA</h1>
   <ul>
     <li><a href="registration.php">Register</a></li>
     <li><a href="login.php">Login</a></li>
