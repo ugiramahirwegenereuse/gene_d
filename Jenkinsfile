@@ -1,42 +1,35 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_COMPOSE = "/usr/local/bin/docker-compose" // adjust if needed
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                echo 'stage running'
-                checkout scm
+                git branch: 'main', url: 'https://github.com/ugiramahirwegenereuse/gene_d.git'
             }
         }
-        stage('Build') {
+
+        stage('Build & Start Docker') {
             steps {
-                echo 'stage running'
-                sh 'docker-compose -f docker-compose.yml build'
+                sh 'docker-compose down'
+                sh 'docker-compose up --build -d'
             }
         }
+
         stage('Test') {
             steps {
-                echo 'stage running'
-                // placeholder: you could run PHP linter or unit tests
-                sh 'php -l src/index.php || true'
-            }
-        }
-        stage('Dockerize') {
-            steps {
-                echo 'stage running'
-                sh 'docker-compose -f docker-compose.yml up -d --build'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'stage running'
-                // placeholder deploy step
-                echo "Deployment step (placeholder)"
+                // You can add simple curl test to check PHP app
+                sh 'curl -I http://localhost:8010/registration.php'
             }
         }
     }
+
     post {
         always {
-            echo 'Pipeline finished'
+            echo 'Pipeline finished.'
         }
     }
 }
