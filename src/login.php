@@ -1,4 +1,5 @@
 <?php
+// login.php
 session_start();
 
 $db_host = '25rp19942_db';
@@ -27,16 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->num_rows === 1) {
             $stmt->bind_result($user_id, $hash, $firstname);
             $stmt->fetch();
-           if (password_verify($password, $hash)) {
-               $_SESSION['user_id'] = $user_id;
-               $_SESSION['user_firstname'] = $firstname;
-
-               var_dump($_SESSION); // TEMP CHECK
-               exit;
-
-               header("Location: dashboard.php");
-               exit;
-           }
+            if (password_verify($password, $hash)) {
+                $_SESSION['user_id'] = $user_id;
+                $_SESSION['user_firstname'] = $firstname;
+                header("Location: dashboard.php");
+                exit;
             } else {
                 $errors[] = "Invalid credentials.";
             }
